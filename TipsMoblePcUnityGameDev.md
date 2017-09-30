@@ -25,6 +25,8 @@
             ·
     - 纹理打包成Atlas图集(POT并注意节约空间)，减少Material数量
     - 不同Material排定不同的Queue，以避免不同Material在渲染时互相插队，产生冗余DrawCall
+    - Imposter
+        - TODO
 - 三角面 100K 
 - vbo 5M
 - skinned meshes  50
