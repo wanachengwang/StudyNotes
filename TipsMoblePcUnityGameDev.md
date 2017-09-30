@@ -3,8 +3,27 @@
 ## 手机游戏性能规范---2015年uwa 给出了一组数据(同屏)：
 
 - DrawCall 250
-    - 利用Static Batching和Dynamic Batching（虽然900 slots以下有效）
-    - 纹理打包成Atlas图集（POT并注意节约空间），减少Material数量
+    - Batching
+        - 一个Batch是 改变GPU状态(mesh, shader, tex, blendSettings and other shader properties) + 一个或更多Draw指令
+        - 故Batching需要相同材质，不支持skinned mesh renderer
+        - Static Batching 勾选 Static
+        - Dynamic Batching需900 slots以下
+    - GPU Instancing
+        - 不支持skinned mesh renderer
+        - 在Material上Enable GPU Instancing
+        - 相同mesh，相同material，加per-instance data（即不是完全相同的material）
+            
+            `_Color ("Color", Color) = (1,1,1,1)
+            ...
+            UNITY_INSTANCING_CBUFFER_START(Props)
+                UNITY_DEFINE_INSTANCED_PROP(fixed4, _Color)
+            UNITY_INSTANCING_CBUFFER_END`
+            
+            ·MaterialPropertyBlock props = new MaterialPropertyBlock();
+            props.SetColor("_Color", new Color(r, g, b))
+            renderer.SetPropertyBlock(props);
+            ·
+    - 纹理打包成Atlas图集(POT并注意节约空间)，减少Material数量
     - 不同Material排定不同的Queue，以避免不同Material在渲染时互相插队，产生冗余DrawCall
 - 三角面 100K 
 - vbo 5M
@@ -22,11 +41,13 @@
 - 程序规范
 
 ## 防作弊（特别是PC版）
+- TODO
+
 
 ## 从Mobile版到PC版差异
 - 之前因为性能限制的做法需要恢复
     - 模型可以更多面（可以通过lod调节）
-    - 更好效果的Material/shader/texture，重新分uv
+    - 更好效果的Material/shader/texture，重新分uv(3dMax:UVW XForm Modifier)
 - 操作/视野范围/其他不同的设计
 
 

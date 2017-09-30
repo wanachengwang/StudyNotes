@@ -12,6 +12,8 @@
     - State / Transition / Condition(Parameter) / StateMachineBehaviour / Event
     - SubStateMacine
     - Layer(normally same state machine but different anim) SetLayerWeight
+    - Transition Solo/Mute to debug
+    - AnyState
 
 ## Sprite Plugins
 
