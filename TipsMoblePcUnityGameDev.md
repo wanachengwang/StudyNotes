@@ -24,7 +24,8 @@
             renderer.SetPropertyBlock(props);
             ·
     - 纹理打包成Atlas图集(POT并注意节约空间)，减少Material数量
-    - 不同Material排定不同的Queue，以避免不同Material在渲染时互相插队，产生冗余DrawCall
+        - [TODO]Assetbundle how?
+    - 不同Material排定不同的Queue，以避免不同Material在渲染时 互相插队 ，产生冗余DrawCall
     - Imposter
         - TODO
 - 三角面 100K 
@@ -45,12 +46,21 @@
 ## 防作弊（特别是PC版）
 - TODO
 
+## Quick Update(热更新)
+- In Steam, Steam would take over all update things;
+- Method: AssetBundle/Lua
+- 代码更新
+    - Put dll into Assetbundle then use System.Relection
+- 资源更新
 
 ## 从Mobile版到PC版差异
 - 之前因为性能限制的做法需要恢复
     - 模型可以更多面（可以通过lod调节）
     - 更好效果的Material/shader/texture，重新分uv(3dMax:UVW XForm Modifier)
 - 操作/视野范围/其他不同的设计
+- AssetBundle文件是平台依赖的，不兼容
+- 其他
+    - 针对mobile的GCloud服务
 
 
 
