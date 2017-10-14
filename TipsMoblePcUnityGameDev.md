@@ -48,10 +48,13 @@
 
 ## Quick Update(热更新)
 - In Steam, Steam would take over all update things;
-- Method: AssetBundle/Lua
-- 代码更新
-    - Put dll into Assetbundle then use System.Relection
-- 资源更新
+- For Code Update(http://www.cnblogs.com/quansir/p/6610449.html)
+    - Assembly(Dll) Update
+        - Dll(raw file or rename to *.bytes and assetbundled),use System.Relection 
+        - Now work in ios,IL2Cpp compile JIT code to AOT, JIT(dll) can not be used in runtime
+    - Lua
+- For Resource Update
+
 
 ## 从Mobile版到PC版差异
 - 之前因为性能限制的做法需要恢复

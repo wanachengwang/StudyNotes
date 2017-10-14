@@ -1,3 +1,10 @@
+## Compiler Config
+- https://docs.unity3d.com/Manual/PlatformDependentCompilation.html
+- gmcs: compiler to target the 2.0 mscorlib
+- smcs: compiler to target the 2.1 mscorlib, to build Moonlight applications.
+- dmcs: compiler to target the 4.0 mscorlib.
+- In ver >= unity5.5, use mcs.rsp instead of previour gmcs.rsp/smcs.rsp.
+    - -unsafe
 ## Model and Animation
 - Animation: Anime current gameobject(and children)
     - Refer to Unity 2D.md
@@ -12,7 +19,7 @@
     - fbx(http://download.autodesk.com/us/fbx/2010/fbx_sdk_help/index.html?url=WS1a9193826455f5ff-150b16da11960d83164-6c6f.htm,topicNumber=d0e127)
     - dae(https://www.khronos.org/files/collada_spec_1_5.pdf)
 ## Assetbundles
-- Set Assetbundles name in Inspector's AssetBundle lable
+- Set Assetbundles name/ext in Inspector's AssetBundle lable
 - Or Drag assets into AssetBundle Browser
 - Then Build AssetBundle in AssetBundle Browser or with BuildPipeline.BuildAssetBundles
 - Scene can be build into AssetBundle, and prior to the scene in build with same name when SceneManager.LoadScene.
@@ -23,4 +30,7 @@
         Assembly asm = Assembly.Load (asmBytes.bytes);
         //Assembly asm = Assembly.LoadFile (Application.dataPath + @"/../MonoClassTst.dll");
 		Type t1 = asm.GetType ("MonoClassTst.MonoClass1");
+        t1.GetMethod ("Func0", System.Reflection.BindingFlags.Instance|BindingFlags.NonPublic).Invoke (t1c, null);
         gameObject.AddComponent (t1);
+
+        Note: 
