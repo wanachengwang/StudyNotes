@@ -50,10 +50,27 @@
 - In Steam, Steam would take over all update things;
 - For Code Update(http://www.cnblogs.com/quansir/p/6610449.html)
     - Assembly(Dll) Update
-        - Dll(raw file or rename to *.bytes and assetbundled),use System.Relection 
-        - Now work in ios,IL2Cpp compile JIT code to AOT, JIT(dll) can not be used in runtime
-    - Lua
+        - Dll(raw file or rename to *.bytes and assetbundled),use System.Relection
+        - System.Relection.Emit would not be used in AOT
+        - Not allowed by App Store policy, WorkArounds:
+            - C#Light
+            - ILRuntime(used in ILXtime,Egametang),here use ILXTime and inject special methods as follow:
+                - Awake
+                - Start
+                - Update
+                - LateUpdate
+                - OnTriggerEnter
+                - OnTriggerStay
+                - OnTriggerExit
+                - OnCollisionEnter
+                - OnCollisionStay
+                - OnCollisionExit
+                - OnEnable
+                - OnDisable
+                - OnDestroy
+    - Lua(uLua,xLua,toLua)
 - For Resource Update
+    - AssetBundles
 
 
 ## 从Mobile版到PC版差异
