@@ -149,6 +149,8 @@ Note:
     - Tick should be invoked manually.
 - Multi Ctor: Only the only one with[Inject] can be Injected.
 - Lazy/Performance, ExecuteOrder, TransientIsDefault, etc.
-
+- ListBinding: Bind same target type multitimes
+- ConditionalBinding: WhenInjectedInto<Bar>();//cxt=>cxt.ObjectType==typeof(Bar)
+- ScriptableObject: TODO
 
 
