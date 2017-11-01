@@ -140,6 +140,31 @@ Note:
     - OnSpawned     //Called immediately after the item is removed from the pool
     - OnDespawned   //Called immediately after the item is returned to the pool
 
+## Configuration
+- ITickable and put [Serializable] settings in Installer
+    - For MonoInstaller, Configuration will be store in monobehavior script
+    - For ScriptableObjectInstaller, Configuration stored in asset
+    ```csharp
+    public class GameMgr : ITickable {
+        Settings _gs;
+        public GameMgr(Settings gs){
+            _gs = gs;
+        }
+        [Serializable]
+        public class Settings{
+            public float Spd;
+        }
+    }
+    //public class TestInstaller : MonoInstaller<TestInstaller> 
+    [CreateAssetMenu(fileName = "TestInstaller", menuName = "Installers/TestInstaller")]
+    public class TestInstaller : ScriptableObjectInstaller<TestInstaller> {
+        public GameMgr.Settings GameSettings;
+        public override void InstallBindings() {
+            Container.BindInstance(GameSettings);
+            Container.BindInterfacesTo<GameMgr>().AsSingle();
+        }
+    }
+    ```
 ## Guidelines / Recommendations / Tips and Tricks
 - Don't use GameObject.Instantiate if your objects need injection, Use Factories.
 - Best not reference to the container out of the composition root "layer"
@@ -151,6 +176,5 @@ Note:
 - Lazy/Performance, ExecuteOrder, TransientIsDefault, etc.
 - ListBinding: Bind same target type multitimes
 - ConditionalBinding: WhenInjectedInto<Bar>();//cxt=>cxt.ObjectType==typeof(Bar)
-- ScriptableObject: TODO
 
 
