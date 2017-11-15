@@ -25,5 +25,9 @@ https://github.com/TORISOUP/UniRxWorkBook
 
 #### XueQiuSuperSpider
 Forked from decaywood/XueQiuSuperSpider
-雪球股票信息超级爬虫
 https://github.com/decaywood/XueQiuSuperSpider
+
+#### Fracturing_Destruction
+Create Other->Ultimate Game Tools->Fractured Object to slice an object into multi parts.
+Each part has attachInfo with others, enough impact would break the attach and transmit to next with some reducing
+http://www.ultimategametools.com/products/fracturing/help
