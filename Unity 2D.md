@@ -1,16 +1,16 @@
-## Sprite Animation
-- Mode:Single/Multiple
-- Sprite Editor -> Slice
+## Sprite Animation Importing
+- Set Mode:Single/Multiple
+- Use Sprite Editor -> Slice into multiple slices
 - Drag multi slices into scene, Animator auto added
 - Or add Animator / Animation manually
-- Animation Editor(*.anim yaml with bones and matrix)
+- Animation Editor(*.anim yaml with bones and matrix) to edit animation clip
     - record / edit anim in dopeSheet/Curve
     - add event if needed
-    - self and child
-- Animator Editor(*.controller yaml) 
+    - affect self and children
+- Animator Editor(*.controller yaml) to edit animator
     - State machine      
     - State / Transition / Condition(Parameter) / StateMachineBehaviour / Event
-    - SubStateMacine
+    - SubStateMachine
     - Layer(normally same state machine but different anim) SetLayerWeight
     - Transition Solo/Mute to debug
     - AnyState
