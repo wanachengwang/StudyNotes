@@ -8,6 +8,7 @@
 ## Model and Animation
 - Animation: Anime current gameobject(and children)
     - Refer to Unity 2D.md
+    - Animation Clip can be edited in Inspector
 - Animator: Logic of transferring among animation clips
     - Refer to Unity 2D.md
 - Timeline: Anime multi gameobjects to a movie clip
