@@ -14,7 +14,8 @@
 		- CLIENT_TYPE_BOTS				= 6,// bots， 从bots目录查找ClientMethod
 		- CLIENT_TYPE_MINI				= 7,// 微型客户端
 
-## Messages Binding/Sending/Recving/Handling
+## Messages Binding/Sending/Recving/Handling 
+在Unity插件内部
 ### Message constructor
     public Message(MessageID msgid, string msgname, Int16 length, sbyte argstype,
         List<Byte> msgargtypes, System.Reflection.MethodInfo msghandler);
@@ -51,8 +52,8 @@
     msg.handleMessage(stream);    
 
 ## Event Registration/Firing
-+ RegisterIn        : UI/Render -> KBE
-+ RegisterOut       : KBE -> UI/Render
++ RegisterIn        : UI/Render -> KBE, UI/Render fire 插件中定义的Event
++ RegisterOut       : KBE -> UI/Render, 插件中 fire UI/Render定义的Event
 + Event.FireIn/Out/All
 + Event.processInEvents/processOutEvents
 + Sample Flow: 
@@ -101,10 +102,11 @@
 
 注:
 1. baseappIP：baseappPort来自于Client_onLoginSuccessfully
-2. Base_onRemoteMethodCall是角色Entity.basecall("reqAvatarList")时发送
-3. Client_onRemoteMethodCall是因为服务端Account.py的reqAvatarList调用self.client.onReqAvatarList(self.characters)
-4. LoginApp的心跳包通常仅在Login超时才可能收到,正常情况不会收到
-5. Message name prefix ????
+2. 登录网关成功后,Client_onCreatedProxies为entity创建客户端实例(通过Entity名字反射,这里是Account)
+3. Base_onRemoteMethodCall是角色Entity.basecall("reqAvatarList")时发送
+4. Client_onRemoteMethodCall是因为服务端Account.py的reqAvatarList调用self.client.onReqAvatarList(self.characters)
+5. LoginApp的心跳包通常仅在Login超时才可能收到,正常情况不会收到
+6. Message name prefix ????
 
 ## Entity
 http://kbengine.org/cn/docs/programming/entitydef.html
@@ -112,13 +114,15 @@ http://kbengine.org/cn/docs/programming/entitydef.html
 Entity定义文件是由客户端发送Baseapp_importClientEntityDef从服务器端请求下来并且缓存。
 
 ### Entity 客户端/服务端 对应
-？？？？？？
+1. onImportClientEntityDef时根据Entity名字反射查找到对应的Entity类,并建立string/type映射表
+2. 登录网关成功后,BaseApp调用createClientProxies,向客户端发送Client_onCreatedProxies消息,消息参数包含Entity名字
+3. Client_onCreatedProxies根据消息中的Entity名字在Entity类映射表中找到Entity类,创建实例
 
 ### 调用服务端方法
 class Entity中定义了两个调用函数，本质是
 1. 首先根据Entity的classname和methodname在本地缓存的Entity定义文件中查找到methodID
 2. 然后与参数一起打包成Message用Bundle类向服务端发送：
-这两个函数是
+这两个函数是:
 1. basecall : 调用<BaseMethod>中标记了<Exposed>的方法，消息类型Base_onRemoteMethodCall
 2. cellcall : 调用<CellMethod>中标记了<Exposed>的方法，消息类型Baseapp_onRemoteCallCellMethodFromClient
 
@@ -148,4 +152,13 @@ def MessageTest(self, iid):
 3. 因为onMessageTest也是通过Entity Id来调用的，所以onMessageTest需要添加在客户端的Account Entity
 ```cs
 public void onMessageTest(Byte iid) { Debug.LogError("onMessageTest:"+iid); }
+```
+4. 调用
+```cs
+if (KBEngineApp.app.entity_type == "Account") {
+    KBEngine.Account account = (KBEngine.Account)KBEngineApp.app.player();
+    if (account != null) {
+        account.baseCall("MessageTest", 22);
+    }
+}
 ```
