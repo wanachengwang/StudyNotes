@@ -1,3 +1,6 @@
+## Framework
+![KBEngine Framework](files/kbefrm.png)
+
 ## Server资产库目录结构
 \<assets>
 + scripts
@@ -21,8 +24,8 @@
         - kbengine.xml      // 服务端配置文件
     + spaces                // 空间的资源数据，比如碰撞信息，寻路数据
 
-## App脚本
-每个App的Python脚本在kbengine_defs.xml中指定，例:
+## App脚本 kbemain.py
+1. 每个App的Python脚本在kbengine_defs.xml中指定，例:
 ```xml
 <baseapp>
     <!-- 脚本入口模块， 相当于main函数 (Entry module, like the main-function) -->
@@ -30,7 +33,7 @@
     ...
 </baseapp>
 ```
-在服务器代码调用：
+2. 在服务器代码调用：
 ```
 if (getEntryScript().get() && PyObject_HasAttrString(getEntryScript().get(), "onReadyForShutDown") > 0) {
     // 所有脚本都加载完毕
@@ -41,7 +44,7 @@ if (getEntryScript().get() && PyObject_HasAttrString(getEntryScript().get(), "on
 }
 ```
 
-## 定义Entity
+## Entity脚本/定义
 官方文档[点此](http://kbengine.org/cn/docs/programming/entitydef.html)
 ### Account Entity
 账号Entity的名称在kbengine_defs.xml中指定，例:
@@ -57,13 +60,13 @@ if (getEntryScript().get() && PyObject_HasAttrString(getEntryScript().get(), "on
 在服务器代码中会读取到 dbcfg.dbAccountEntityScriptType
 
 ### Entity创建
-在Python脚本中：
+1. 在Python脚本中：
 ```python
 KBEngine.createBaseLocally('Avatar', props)
 ... or ...
 KBEngine.createBaseFromDBID("Avatar", dbid, self.__onAvatarCreated)
 ```
-在服务器代码中：
+2. 在服务器代码中：
 ```c
 APPEND_SCRIPT_MODULE_METHOD(getScript().getModule(), createBaseLocally, __py_createBase,METH_VARARGS, 0);
 APPEND_SCRIPT_MODULE_METHOD(getScript().getModule(), createBaseFromDBID, __py_createBaseFromDBID, 0);
@@ -78,6 +81,9 @@ PyObject* Baseapp::__py_createBaseFromDBID(PyObject* self, PyObject* args){
     ...
 }
 ```
+3. 在客户端(如果hasClient为true):
+BaseApp调用createClientProxies,向客户端发送Client_onCreatedProxies消息,消息参数包含Entity名字
+Client_onCreatedProxies根据消息中的Entity名字在Entity类映射表中找到Entity类,创建实例
 
 ## 脚本的调用流程
 ？？？？

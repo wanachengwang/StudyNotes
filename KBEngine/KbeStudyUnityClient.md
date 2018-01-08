@@ -1,3 +1,6 @@
+## Framework
+![KBEngine Framework](files/kbefrm.png)
+
 ## Configuaration
 + 定义在KBEMain中,通常写一个继承于KBEMain的类，包含
     - Debug Level
@@ -52,11 +55,11 @@
     msg.handleMessage(stream);    
 
 ## Event Registration/Firing
-+ RegisterIn        : UI/Render -> KBE, UI/Render fire 插件中定义的Event
-+ RegisterOut       : KBE -> UI/Render, 插件中 fire UI/Render定义的Event
++ RegisterIn  : KBE插件(内部)中注册/定义的Event, 由UI/Render(外部) FireIn/触发 
++ RegisterOut : UI/Render(外部)注册/定义的Event, 由KBE插件(内部)中 FireOut/触发  
 + Event.FireIn/Out/All
 + Event.processInEvents/processOutEvents
-+ Sample Flow: 
++ Sample Flow : 
     + connectTo -> _asyncConnectCB
         - Event.fireIn("_onConnectionState", new object[] { state });
     + KBEMain.KBEUpdate -> KBEngine.Process -> 
