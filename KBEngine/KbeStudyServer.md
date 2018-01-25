@@ -116,12 +116,14 @@ Client_onCreatedProxies根据消息中的Entity名字在Entity类映射表中找
     Proxy* base = static_cast<Proxy*>(createEntity(g_serverConfig.getDBMgr().dbAccountEntityScriptType,
             NULL, false, entityID));
     ```
-2. Account.py中创建Avatar:
+2. base/Account.py中创建Avatar:
     + 新建：kbengine.createBaseLocally('Avatar', props), 然后 Avatar.WriteToDB
     + 从DB加载: kbengine.createBaseFromDBID('Avatar', dbid, onAvatarCreated)
-3. baseapp的kbengine.py中创建spaces(多个space的管理器):
+    + self.giveClientTo(avatar) #将客户端控制权切换到Avatar身上
+3. base/kbengine.py中创建spaces(多个space的管理器):
     + KBEngine.createBaseLocally( "Spaces", {} )
-4. spaces.py中根据场景表(data\d_spaces.py)创建多个space
+    + 保存在globalData["Spaces"]
+4. base/spaces.py中根据场景表(data/d_spaces.py)创建多个space(以及一个SpaceDuplicate)
     |id|type|entityType|resPath|spawnPos|name|
     |-|-|-|-|-|-|-
     |1|1|Space         |spaces/xinshoucun              |(771.5861, 211.0021, 776.5501)|新手村
@@ -131,23 +133,26 @@ Client_onCreatedProxies根据消息中的Entity名字在Entity类映射表中找
     |5|2|SpaceDuplicate|spaces/duplicate               |(0.0, 0.0, 0.0)               |Duplicate(副本)
     |6|1|Space         |spaces/kbengine_cocos2d_js_demo|(108.0, 0.0, 90.0)            |kbengine_cocos2d_js_demo
     |7|1|Space         |spaces/kbengine_ue4_demo       |(-97.9299, 1.5, -158.922)     |kbengine_ue4_demo       
-    + 根据以上数据创建spaceAlloc,createSpaceOnTimer中调用SpaceAlloc.Init创建Space Entity:
+    + 根据以上数据创建spaceAlloc,createSpaceOnTimer中调用SpaceAlloc.init创建Space Entity:
     KBEngine.createBaseAnywhere(spaceData["entityType"],{"spaceUType" : self._utype,
                                                          "spaceKey" : spaceKey,
                                                          "context" : context,},
                                 Functor.Functor(self.onSpaceCreatedCB, spaceKey))
-    + 创建了六种Space Entity, TODO:SpaceDuplicate
-5. space.py的onTime创建SpawnPoint(这里只有xinshoucun)：
+    + 创建了六种Space Entity, 保存在globalData["Space_%i" % self.spaceID"]
+    + 对于SpaceDuplicate,有对应的SpaceAllocDuplicate,将init重写为一个空函数,故不会在初始时创建baseapp Entity
+5. base/space.py的__init__中创建cellapp的Entity:
+    + self.createInNewSpace(None)   #在一个空间的cell上创建一个关联的实体，它请求通过cellappmgr来完成
+6. base/space.py的onTime创建SpawnPoint：
     + 从d_spaces_spawn.py中读取当前spaceType对应的SpawnPoint数据(d_spaces_spawns.py,xinshoucun数据定义在xml中)
-    + 添加data\spawnpoints\[ResPath]_spawnpoints.xml(这里只有xinshoucun)中定义的SpawnPoint数据
+    + 添加data/spawnpoints/[ResPath]_spawnpoints.xml(这里只有xinshoucun)中定义的SpawnPoint数据
     + KBEngine.createBaseAnywhere("SpawnPoint",{"spawnEntityNO" : datas[0],
                                                 "position" : datas[1], 
                                                 "direction" : datas[2], 
                                                 "modelScale" : datas[3],
                                                 "createToCell" : self.cell})
-6. SpawnPoint.py创建cellapp的Entity:
+7. base/SpawnPoint.py创建cellapp的Entity:
     + self.createCellEntity(self.createToCell)
-7. 在SpawnPoint上创建Entities
+8. cell/SpawnPoint.py上创建Entities
     + KBEngine.createEntity(datas["entityType"], self.spaceID, tuple(self.position), tuple(self.direction), params)
     + Entities定义(d_entities.py)如下:
 
@@ -184,3 +189,14 @@ Client_onCreatedProxies根据消息中的Entity名字在Entity类映射表中找
     |80012001|60|30|0       |80012001|1|Monster|怪物12
     |1002    |65|50|10001001|1002    |1|NPC    |传送员
     |2003    |65|50|0       |2003    |1|Monster|怪物3
+
+## Player生成及所在的场景(spaceUType)
+1. cellData是一个字典属性。每当base实体没有创建它的cell实体时，cell实体的属性会(从数据库读出)保存在这里. 除了cell实体在实体定义文件里指定的属性外，它还包含position, direction and spaceID
+2. Teleport.def中定义的spaceUType(sm_spaceUType)存储Entity所在的space ID
+
+
+1. Avatar在数据库中存储所在场景ID的是sm_spaceUType
+
+## 其他
+1. Avatar的名字 tbl_avatar的sm_name为空导致脚本访问Avatar.nameB出错
+2. Unity生成数据只来自于kbengine_unity3d_demo 

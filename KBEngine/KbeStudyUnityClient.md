@@ -73,7 +73,7 @@
 |From Client                      | From Server | Description |
 |-|-|-|
 |ConnectTo 127.0.0.1:20013        |-|connect to loginapp |
-|hello                            |Client_onHelloCB
+|hello                            |Client_onHelloCB | 返回Digest与本地cache比对,一致
 |Loginapp_login                   |Client_onLoginSuccessfully
 |ConnectTo baseappIP:20015        |-|connect to baseapp
 |hello                            |Client_onHelloCB
@@ -85,7 +85,7 @@
 |From Client                      | From Server | Description |
 |-|-|-|
 |ConnectTo 127.0.0.1:20013        |-|connect to loginapp |
-|hello                            |Client_onHelloCB
+|hello                            |Client_onHelloCB | 返回Digest与本地cache比对,不一致
 |importClientMessages             |Client_onImportClientMessages
 |Loginapp_importServerErrorsDescr |Client_onImportServerErrorsDescr
 |Loginapp_login                   |Client_onLoginSuccessfully
