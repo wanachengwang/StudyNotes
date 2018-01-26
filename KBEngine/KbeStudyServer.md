@@ -140,9 +140,11 @@ Client_onCreatedProxies根据消息中的Entity名字在Entity类映射表中找
                                 Functor.Functor(self.onSpaceCreatedCB, spaceKey))
     + 创建了六种Space Entity, 保存在globalData["Space_%i" % self.spaceID"]
     + 对于SpaceDuplicate,有对应的SpaceAllocDuplicate,将init重写为一个空函数,故不会在初始时创建baseapp Entity
-5. base/space.py的__init__中创建cellapp的Entity:
+5. base/space.py的__init__中创建space的cell Entity:
     + self.createInNewSpace(None)   #在一个空间的cell上创建一个关联的实体，它请求通过cellappmgr来完成
-6. base/space.py的onTime创建SpawnPoint：
+6. base/space.py的loginToSpace中创建玩家Avatar的cell entity:
+    + avatarMailbox.createCell(self.cell)
+7. base/space.py的onTime创建SpawnPoint：
     + 从d_spaces_spawn.py中读取当前spaceType对应的SpawnPoint数据(d_spaces_spawns.py,xinshoucun数据定义在xml中)
     + 添加data/spawnpoints/[ResPath]_spawnpoints.xml(这里只有xinshoucun)中定义的SpawnPoint数据
     + KBEngine.createBaseAnywhere("SpawnPoint",{"spawnEntityNO" : datas[0],
@@ -150,9 +152,9 @@ Client_onCreatedProxies根据消息中的Entity名字在Entity类映射表中找
                                                 "direction" : datas[2], 
                                                 "modelScale" : datas[3],
                                                 "createToCell" : self.cell})
-7. base/SpawnPoint.py创建cellapp的Entity:
+8. base/SpawnPoint.py创建cellapp的Entity:
     + self.createCellEntity(self.createToCell)
-8. cell/SpawnPoint.py上创建Entities
+9. cell/SpawnPoint.py上创建Entities
     + KBEngine.createEntity(datas["entityType"], self.spaceID, tuple(self.position), tuple(self.direction), params)
     + Entities定义(d_entities.py)如下:
 
@@ -193,9 +195,10 @@ Client_onCreatedProxies根据消息中的Entity名字在Entity类映射表中找
 ## Player生成及所在的场景(spaceUType)
 1. cellData是一个字典属性。每当base实体没有创建它的cell实体时，cell实体的属性会(从数据库读出)保存在这里. 除了cell实体在实体定义文件里指定的属性外，它还包含position, direction and spaceID
 2. Teleport.def中定义的spaceUType(sm_spaceUType)存储Entity所在的space ID
+3. 某个玩家请求登陆到某个space中: Avatar.onEntitiesEnabled==>Teleport.onEntitiesEnabled==>Space.loginToSpace
+    + avatarMailbox.createCell(self.cell)
+4. 
 
-
-1. Avatar在数据库中存储所在场景ID的是sm_spaceUType
 
 ## 其他
 1. Avatar的名字 tbl_avatar的sm_name为空导致脚本访问Avatar.nameB出错

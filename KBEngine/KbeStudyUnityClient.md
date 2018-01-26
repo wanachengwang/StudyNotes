@@ -69,19 +69,26 @@
         + Event.processOutEvents -> onConnectionState
 
 ## Message Flow
-### With Valid Cache Files
-|From Client                      | From Server | Description |
+### Login With Valid Cache Files
+|From Client                      | From Server |
 |-|-|-|
-|ConnectTo 127.0.0.1:20013        |-|connect to loginapp |
-|hello                            |Client_onHelloCB | 返回Digest与本地cache比对,一致
+|ConnectTo 127.0.0.1:20013        |-connect to loginapp |
+|hello                            |Client_onHelloCB
 |Loginapp_login                   |Client_onLoginSuccessfully
-|ConnectTo baseappIP:20015        |-|connect to baseapp
+|ConnectTo baseappIP:20015        |-connect to baseapp
 |hello                            |Client_onHelloCB
 |Baseapp_loginBaseapp             |Client_onUpdatePropertys
 |-                                |Client_onCreatedProxies
 |Base_onRemoteMethodCall          |Client_onRemoteMethodCall
+注:
+1. Client_onHelloCB(连接loginapp时): 返回Digest与本地cache比对,一致,即Cache合法
+2. Client_onLoginSuccessfully: 服务器下发baseappIP:baseappPort以连接baseapp
+3. Client_onUpdatePropertys: 服务器下发Account Entity的数据
+4. Client_onCreatedProxies: 服务器请求为entity创建客户端实例(通过Entity名字反射,这里是Account,使用刚才的数据)
+5. Base_onRemoteMethodCall: 角色Entity.basecall("reqAvatarList")时发送
+6. Client_onRemoteMethodCall: 服务端Account.py的reqAvatarList调用self.client.onReqAvatarList(self.characters)
 
-### Without Valid Cache Files
+### Login Without Valid Cache Files
 |From Client                      | From Server | Description |
 |-|-|-|
 |ConnectTo 127.0.0.1:20013        |-|connect to loginapp |
@@ -96,6 +103,28 @@
 |Baseapp_loginBaseapp             |Client_onUpdatePropertys
 |-                                |Client_onCreatedProxies
 |Base_onRemoteMethodCall          |Client_onRemoteMethodCall
+注:
+1. Client_onHelloCB(连接loginapp时) 返回Digest与本地cache比对,不一致,即Cache不合法
+
+### Enter Game World
+|From Client | From Server | Description |
+|-|-|-|
+|Base_onRemoteMethodCall          |Client_onUpdatePropertys
+|-                                |Client_onEntityDestroyed
+|-                                |Client_onCreatedProxies
+|-                                |Client_onUpdatePropertys
+|-                                |Client_onUpdatePropertys
+|-                                |Client_onEntityEnterWorld
+|Baseapp_onRemoteCallCellMethodFromClient | |
+|-                                |Client_onUpdatePropertys
+|-                                |Client_onUpdatePropertys
+|-                                |Client_onUpdatePropertys
+|-                                |Client_initSapceData
+|-                                |Client_onSetEntityPosAndDir
+|-                                |Client_onEntityEnterSpace
+|-                                |Client_onUpdateBasePos
+|-----|
+|Baseapp_onUpdateDataFromClient   |
 
 ### Heartbeat
 |From Client | From Server | Description |
@@ -103,11 +132,7 @@
 |Loginapp_onClientActiveTick|Client_onAppActiveTickCB
 |Baseapp_onClientActiveTick|Client_onAppActiveTickCB
 
-注:
-1. baseappIP：baseappPort来自于Client_onLoginSuccessfully
-2. 登录网关成功后,Client_onCreatedProxies为entity创建客户端实例(通过Entity名字反射,这里是Account)
-3. Base_onRemoteMethodCall是角色Entity.basecall("reqAvatarList")时发送
-4. Client_onRemoteMethodCall是因为服务端Account.py的reqAvatarList调用self.client.onReqAvatarList(self.characters)
+
 5. LoginApp的心跳包通常仅在Login超时才可能收到,正常情况不会收到
 6. Message name prefix ????
 
