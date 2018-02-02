@@ -107,34 +107,55 @@
 1. Client_onHelloCB(连接loginapp时) 返回Digest与本地cache比对,不一致,即Cache不合法
 
 ### Enter Game World
-|From Client | From Server | Description |
+|From Client/Server | Msg Type | Description |
 |-|-|-|
-|Base_onRemoteMethodCall          |Client_onUpdatePropertys
-|-                                |Client_onEntityDestroyed
-|-                                |Client_onCreatedProxies
-|-                                |Client_onUpdatePropertys
-|-                                |Client_onUpdatePropertys
-|-                                |Client_onEntityEnterWorld
-|Baseapp_onRemoteCallCellMethodFromClient | |
-|-                                |Client_onUpdatePropertys
-|-                                |Client_onUpdatePropertys
-|-                                |Client_onUpdatePropertys
-|-                                |Client_initSapceData
-|-                                |Client_onSetEntityPosAndDir
-|-                                |Client_onEntityEnterSpace
-|-                                |Client_onUpdateBasePos
-|-----|
-|Baseapp_onUpdateDataFromClient   |
+|Client |Base_onRemoteMethodCall  | baseCall:selectAvatarGame
+|Server |Client_onUpdatePropertys | Entity:Account
+|Server |Client_onEntityDestroyed | Entity:Account(giveClientTo..)
+|Server |Client_onCreatedProxies  | Entity:Avatar
+|Server |Client_onUpdatePropertys | Entity:Avatar
+|Server |Client_onUpdatePropertys | Entity:Avatar
+|Server |Client_onEntityEnterWorld| Entity:Avatar; spaceId:0
+|Client |Baseapp_onRemoteCallCellMethodFromClient | cellCall:requestPull
+|Server |Client_onUpdatePropertys | Entity:Avatar
+|Server |Client_onUpdatePropertys | Entity:Avatar
+|Server |Client_onUpdatePropertys | Entity:Avatar
+|Server |Client_initSpaceData     | spaceId:3; size:1
+|Server |Client_onSetEntityPosAndDir | Entity:Avatar
+|Server |Client_onEntityEnterSpace| Entity:Avatar
+|Server |Client_onUpdateBasePos   |
+|Server |-----| Loop to create other entities in Player's AOI
+|Server |Client_onUpdatePropertys | Cache Monster Propertys
+|Server |Client_onEntityEnterWorld| Create Monster with cache; spaceId:3
+|Server |Client_onUpdatePropertys | Entity:Monster
+|Server |-----| End loop
+
+### Teleport to other space
+1. Add cell method(name:tp) in Avatar.def
+2. Add tp's code in cell/Avatar.py
+```py
+	def tp(self, exposed, type):
+		if exposed != self.id:	return
+		spaceData = d_spaces.datas.get(type)
+		self.teleportSpace(type, spaceData["spawnPos"], tuple(self.direction), {})
+```
+3. In Unity Client, Add cellCall("tp") in AvatarEntity
+|From Client/Server | Msg Type | Description |
+|-|-|-|
+|Client |Baseapp_onRemoteCallCellMethodFromClient  | cellCall:tp
+|Server |Client_onEntityLeaveSpace | Entity:Avatar
+|Server |Client_initSpaceData | 
+|Server |Client_onSetEntityPosAndDir | Entity:Avatar
+|Server |Client_onEntityEnterSpace| Entity:Avatar
 
 ### Heartbeat
 |From Client | From Server | Description |
 |-|-|-|
 |Loginapp_onClientActiveTick|Client_onAppActiveTickCB
 |Baseapp_onClientActiveTick|Client_onAppActiveTickCB
-
-
-5. LoginApp的心跳包通常仅在Login超时才可能收到,正常情况不会收到
-6. Message name prefix ????
+注:
+1. LoginApp的心跳包通常仅在Login超时才可能收到,正常情况不会收到
+2. Message name prefix ????
 
 ## Entity
 http://kbengine.org/cn/docs/programming/entitydef.html
@@ -190,3 +211,9 @@ if (KBEngineApp.app.entity_type == "Account") {
     }
 }
 ```
+
+# TODO：
+1. Space Duplicate's Creation/Destroy
+2. Add NavMesh
+3. Skill
+4. Build system

@@ -191,6 +191,9 @@ Client_onCreatedProxies根据消息中的Entity名字在Entity类映射表中找
     |80012001|60|30|0       |80012001|1|Monster|怪物12
     |1002    |65|50|10001001|1002    |1|NPC    |传送员
     |2003    |65|50|0       |2003    |1|Monster|怪物3
+注:
+   1. addProximity添加trigger,响应函数是onEnterTrap, 在Monster和Gate都用到了
+   2. Gate的onEnterTrap判断40001003则传回本space的出生点,其它传到space 3/4
 
 ## Player生成及所在的场景(spaceUType)
 1. cellData是一个字典属性。每当base实体没有创建它的cell实体时，cell实体的属性会(从数据库读出)保存在这里. 除了cell实体在实体定义文件里指定的属性外，它还包含position, direction and spaceID

@@ -1,2 +1,6 @@
+print("Good!")
+
 def main():
-    print('hellopytho')
+    print('hellopython')
+
+main()
