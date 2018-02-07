@@ -139,7 +139,8 @@ Client_onCreatedProxies根据消息中的Entity名字在Entity类映射表中找
                                                          "context" : context,},
                                 Functor.Functor(self.onSpaceCreatedCB, spaceKey))
     + 创建了六种Space Entity, 保存在globalData["Space_%i" % self.spaceID"]
-    + 对于SpaceDuplicate,有对应的SpaceAllocDuplicate,将init重写为一个空函数,故不会在初始时创建baseapp Entity
+    + 对于SpaceDuplicate,有对应的SpaceAllocDuplicate,将init重写为一个空函数,故不会在初始时创建baseapp Entity;
+                         有对应的SpaceDuplicateContext, return {"spaceKey" : entity.dbid}
 5. base/space.py的__init__中创建space的cell Entity:
     + self.createInNewSpace(None)   #在一个空间的cell上创建一个关联的实体，它请求通过cellappmgr来完成
 6. base/space.py的loginToSpace中创建玩家Avatar的cell entity:
