@@ -23,6 +23,8 @@
     + server
         - kbengine.xml      // 服务端配置文件
     + spaces                // 空间的资源数据，比如碰撞信息，寻路数据
+1. 全局配置:kbe/res/server/kbengine_defs.xml
+2. 本地配置:<assets>/res/server/kbengine.xml
 
 ## DataBase_Tables
 ```c entity_table.h
@@ -63,7 +65,6 @@ if (getEntryScript().get() && PyObject_HasAttrString(getEntryScript().get(), "on
 ## Entity脚本/定义
 官方文档[点此](http://kbengine.org/cn/docs/programming/entitydef.html)
 ### Account Entity
-
 在服务器代码中会读取到 dbcfg.dbAccountEntityScriptType,然后通过如下代码创建Entity
 ```cs baseapp.cpp
 Proxy* base = static_cast<Proxy*>(createEntity(g_serverConfig.getDBMgr().dbAccountEntityScriptType,

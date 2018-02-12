@@ -82,11 +82,12 @@
 |Base_onRemoteMethodCall          |Client_onRemoteMethodCall
 注:
 1. Client_onHelloCB(连接loginapp时): 返回Digest与本地cache比对,一致,即Cache合法
-2. Client_onLoginSuccessfully: 服务器下发baseappIP:baseappPort以连接baseapp
-3. Client_onUpdatePropertys: 服务器下发Account Entity的数据
-4. Client_onCreatedProxies: 服务器请求为entity创建客户端实例(通过Entity名字反射,这里是Account,使用刚才的数据)
-5. Base_onRemoteMethodCall: 角色Entity.basecall("reqAvatarList")时发送
-6. Client_onRemoteMethodCall: 服务端Account.py的reqAvatarList调用self.client.onReqAvatarList(self.characters)
+2. Loginapp_login会发送extra data(场景名), Account.py调用getClientDatas取出作为检索Space的key
+3. Client_onLoginSuccessfully: 服务器下发baseappIP:baseappPort以连接baseapp
+4. Client_onUpdatePropertys: 服务器下发Account Entity的数据
+5. Client_onCreatedProxies: 服务器请求为entity创建客户端实例(通过Entity名字反射,这里是Account,使用刚才的数据)
+6. Base_onRemoteMethodCall: 角色Entity.basecall("reqAvatarList")时发送
+7. Client_onRemoteMethodCall: 服务端Account.py的reqAvatarList调用self.client.onReqAvatarList(self.characters)
 
 ### Login Without Valid Cache Files
 |From Client                      | From Server | Description |
