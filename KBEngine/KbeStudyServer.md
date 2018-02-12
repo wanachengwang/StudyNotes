@@ -6,13 +6,20 @@
 + scripts
     + entities.xml          // 列出所有的entity
     + entity_defs       
-        - \<entity>.def     // entity定义文件，定义entity属性和方法
+        - <entity>.def      // entity定义文件，定义entity属性和方法
     + base                  // BaseApp脚本(*.py)
     + bots                  // 机器人压力测试脚本，简化模拟客户端(登录/AI),bots需要实现ClientMethod
     + cell                  // CellApp脚本
     + client                // ?Client脚本(使用Unity插件,经测试不会被调用此内脚本)
     + common                // 公用脚本(Cell/Base/Client共用的实现函数)
     + data                  // 服务端逻辑数据文件，比如策划导表数据
+        - d_avatar_inittab.py  // 人物初始化数据,(spawnpos会用作副本的出生点)
+        - d_dialogs.py         // 对话数据？？ 
+        - d_entities.py        // Entity属性ID定义 数据
+        - d_skills.py          // 技能数据？？
+        - d_spaces_spawns.py   // 每个场景的怪物出生点数据
+        - d_spaces             // 场景列表(场景名,角色/怪物出生点数据，寻路数据等)
+        + spawnpoints          // 每个场景的怪物出生点数据(xml格式可存放于此)
     + db                    // 数据库扩展
     + interface
     + logger
