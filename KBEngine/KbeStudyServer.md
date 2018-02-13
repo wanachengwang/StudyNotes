@@ -17,9 +17,9 @@
         - d_dialogs.py         // 对话数据？？ 
         - d_entities.py        // Entity属性ID定义 数据
         - d_skills.py          // 技能数据？？
+        - d_spaces             // 场景列表(场景名,角色出生点,resPath(路径必须存在)寻路数据等)
         - d_spaces_spawns.py   // 每个场景的怪物出生点数据
-        - d_spaces             // 场景列表(场景名,角色/怪物出生点数据，寻路数据等)
-        + spawnpoints          // 每个场景的怪物出生点数据(xml格式可存放于此)
+        + spawnpoints          // 每个场景的怪物出生点数据(xml格式可存放于此,叠加)
     + db                    // 数据库扩展
     + interface
     + logger
