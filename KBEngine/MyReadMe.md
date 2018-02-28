@@ -27,6 +27,8 @@ http://www.kbengine.org
 
 ## 准备:
     1. Python 3.4.3 和 MySQL 5.7
+		Python 
+			安装好后需要将python目录添加到Path中
     	MySQL 5.7
     		MySQL 5.7 需要 Python3.4.x(KBE对版本无要求), - Development， 并为KBE创建专门的用户/密码
     		命令行运行mysql -ukbe -pkbe -hlocalhost -P3306 测试是否成功(这里假设用户名密码都是kbe)
