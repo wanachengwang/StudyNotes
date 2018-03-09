@@ -166,41 +166,11 @@ Client_onCreatedProxies根据消息中的Entity名字在Entity类映射表中找
     + self.createCellEntity(self.createToCell)
 9. cell/SpawnPoint.py上创建Entities
     + KBEngine.createEntity(datas["entityType"], self.spaceID, tuple(self.position), tuple(self.direction), params)
-    + Entities定义(d_entities.py)如下:
+    + Entities定义(d_entities.py)格式如下:
 
     |id|runSpeed|moveSpeed|dialogID|modelID|etype|entityType|name|
     |-|-|-|-|-|-|-|-|
     |80008001|60|30|0       |80008001|1|Monster|怪物8
-    |2001    |65|50|0       |2001    |1|Monster|怪物1
-    |1003    |65|50|0       |1003    |1|Monster|怪物1
-    |10003001|65|50|0       |10001001|1|Monster|怪物1
-    |80004001|60|30|0       |80004001|1|Monster|怪物4
-    |80005001|60|30|0       |80005001|1|Monster|怪物5
-    |80013001|60|30|0       |80013001|1|Monster|怪物13
-    |80009001|60|30|0       |80009001|1|Monster|怪物9
-    |80011001|60|30|0       |80011001|1|Monster|怪物11
-    |80002001|60|30|0       |80002001|1|Monster|怪物2
-    |2002    |65|50|0       |2002    |1|Monster|怪物2
-    |80001001|60|30|0       |80001001|1|Monster|怪物1
-    |20003001|65|50|0       |20001001|1|Monster|怪物3
-    |80007001|60|30|0       |80007001|1|Monster|怪物7
-    |20001001|65|50|0       |20001001|1|Monster|艾克斯球
-    |80010001|60|30|0       |80010001|1|Monster|怪物10
-    |10004001|65|50|0       |10004001|1|Monster|怪物2
-    |20002001|65|50|0       |20002001|1|Monster|压力山大巨龙
-    |10001001|65|50|10001001|10001001|1|NPC    |新手接待员
-    |40001002|0 |0 |0       |40001001|1|Gate   |传送门(teleport-back)
-    |40001003|0 |0 |0       |40001001|1|Gate   |传送门(teleport-local)
-    |1004    |65|50|0       |1004    |1|Monster|怪物2
-    |80006001|60|30|0       |80006001|1|Monster|怪物6
-    |1001    |65|50|10001001|1001    |1|NPC    |新手接待员
-    |10002001|65|50|10001001|10001001|1|NPC    |传送员
-    |40001001|0 |0 |0       |40001001|1|Gate   |传送门
-    |80014001|60|30|0       |80014001|1|Monster|怪物14
-    |80003001|60|30|0       |80003001|1|Monster|怪物3
-    |80012001|60|30|0       |80012001|1|Monster|怪物12
-    |1002    |65|50|10001001|1002    |1|NPC    |传送员
-    |2003    |65|50|0       |2003    |1|Monster|怪物3
 注:
    1. addProximity添加trigger,响应函数是onEnterTrap, 在Monster和Gate都用到了
    2. Gate的onEnterTrap判断40001003则传回本space的出生点,其它传到space 3/4
@@ -210,7 +180,22 @@ Client_onCreatedProxies根据消息中的Entity名字在Entity类映射表中找
 2. Teleport.def中定义的spaceUType(sm_spaceUType)存储Entity所在的space ID
 3. 某个玩家请求登陆到某个space中: Avatar.onEntitiesEnabled==>Teleport.onEntitiesEnabled==>Space.loginToSpace
     + avatarMailbox.createCell(self.cell)
-4. 
+4. 关于skill, Demo中，在SkillBox的初始化中为调用self.skills.append为玩家添加技能;对于Monster,Demo中直接在Ai.py的onThinkFight直接发技能。
+
+
+## AI Loop
+1. onWitnessed
+    + enable HeardBeatTime // one per one sec
+2. onHeardBeatTime
+    + Think
+        - Free: 检查领地(范围触发器),RandomWalk
+        - Fight: 战斗状态中,删除当前领地(避免重复进入战斗),战斗处理
+        - Other
+    + IsWitnessed check
+        - false: disable
+3. recvDamage/onEnterTrap(AI的范围触发器)
+    + addEnemy
+        - onAddEnemy: set 战斗状态
 
 
 ## 其他

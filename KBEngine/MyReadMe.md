@@ -32,7 +32,7 @@ http://www.kbengine.org
     	MySQL 5.7
     		MySQL 5.7 需要 Python3.4.x(KBE对版本无要求), - Development， 并为KBE创建专门的用户/密码
     		命令行运行mysql -ukbe -pkbe -hlocalhost -P3306 测试是否成功(这里假设用户名密码都是kbe)
-    		运行MySQL bench，在Option file中修改lower_case_table_names：2 for Windows，0 for Linux
+    		运行MySQL bench，在Option file(默认指定C:\ProgramData\MySQL\MySQL Server 5.7\my.ini)中修改lower_case_table_names：2 for Windows，0 for Linux
 
 	2. 确保已经下载过KBEngine服务端引擎，如果没有下载请先下载
 		下载服务端源码(KBEngine)：
@@ -44,7 +44,7 @@ http://www.kbengine.org
 		安装(KBEngine)：
 			http://www.kbengine.org/docs/installation.html
     		这里可使用python执行安装脚本,自动配置MySQL连接
-    		在MySQL时选yes，127.0.0.1，用户/密码，需要为KBE创建的数据库名
+    		在MySQL时选yes，127.0.0.1:3306，用户/密码(可以先在mysql里加好)，需要为KBE创建的数据库名
     		
 		配置文件
     		服务端默认配置/引擎配置(kbe\res\server\kbengine_defs.xml)
