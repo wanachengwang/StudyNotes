@@ -32,7 +32,8 @@
     + spaces                // 空间的资源数据，比如碰撞信息，寻路数据
 1. 全局配置:kbe/res/server/kbengine_defs.xml
 2. 本地配置:<assets>/res/server/kbengine.xml
-3. app的主脚本(默认为kbemain.py)可在kbengine_defaults.xml->baseapp->entryScriptFile 配置
+3. 数据库(用户名/密码/库名)的配置kbengine_defaults.xml/kbengine.xml->dbmgr->databaseInterfaces->default
+4. app的主脚本(默认为kbemain.py)可在kbengine_defaults.xml->baseapp->entryScriptFile配置
     ```xml
     <baseapp>
         <!-- 脚本入口模块， 相当于main函数 (Entry module, like the main-function) -->
@@ -49,7 +50,7 @@
         ...
     }
     ```
-4. 账号Entity的名称(默认为Account)在kbengine_defs.xml->dbmgr->account_system->accountEntityScriptType 配置
+5. 账号Entity的名称(默认为Account)在kbengine_defs.xml->dbmgr->account_system->accountEntityScriptType 配置
     ```xml
     <dbmgr><account_system>
         <accountEntityScriptType> Account </accountEntityScriptType>  ...
@@ -138,7 +139,7 @@ Client_onCreatedProxies根据消息中的Entity名字在Entity类映射表中找
 2. base/Account.py中创建Avatar:
     + 新建：kbengine.createBaseLocally('Avatar', props), 然后 Avatar.WriteToDB
     + 从DB加载: kbengine.createBaseFromDBID('Avatar', dbid, onAvatarCreated)
-    + self.giveClientTo(avatar) #将客户端控制权切换到Avatar身上
+    + self.giveClientTo(avatar) #将客户端控制权转交给Avatar
 3. base/kbengine.py中创建spaces(多个space的管理器):
     + KBEngine.createBaseLocally( "Spaces", {} )
     + 保存在globalData["Spaces"]
@@ -192,22 +193,6 @@ Client_onCreatedProxies根据消息中的Entity名字在Entity类映射表中找
 3. 某个玩家请求登陆到某个space中: Avatar.onEntitiesEnabled==>Teleport.onEntitiesEnabled==>Space.loginToSpace
     + avatarMailbox.createCell(self.cell)
 
-## Skill
-1. Avatar->SkillBox: 为客户端提供接口对玩家的技能包的增删改查，以及提供UseTargetSkill来发动技能
-2. Avatar/Monster->Spell
-3. 对于玩家，Demo中在SkillBox的初始化中为调用self.skills.append为玩家添加技能
-4. 对于Monster,Demo中直接在Ai.py的onThinkFight直接发技能
-5. TODO:
-    + 技能生命期管理
-    + 技能CD管理
-    + buff生命期管理
-    + buff叠加/冲抵管理
-    + AI的技能方案：1：与玩家统一；2：简化
-
-## 任务链及进度管理
-
-
-
 ## AI Loop
 1. onWitnessed
     + enable HeardBeatTime // one per one sec
@@ -222,10 +207,27 @@ Client_onCreatedProxies根据消息中的Entity名字在Entity类映射表中找
     + addEnemy
         - onAddEnemy: set 战斗状态
 
-
 ## 其他
 1. Avatar的名字 tbl_avatar的sm_name为空导致脚本访问Avatar.nameB出错
 2. Unity生成数据只来自于kbengine_unity3d_demo 
 3. 输出log：self.getScriptName()
+4. 可以通过ControlledBy来控制其他Entity(AOI内)的位置，当然也可以通过在Avatar中添加数据同步然后在服务端赋给其他entity(这个不限于AOI内)
+5. Volatile中的optimized(为true)将不同步y坐标
 
+
+## Skill
+1. Avatar->SkillBox: 为客户端提供接口对玩家的技能包的增删改查，以及提供UseTargetSkill来发动技能
+2. Avatar/Monster->Spell
+3. 对于玩家，Demo中在SkillBox的初始化中为调用self.skills.append为玩家添加技能
+4. 对于Monster,Demo中直接在Ai.py的onThinkFight直接发技能
+5. TODO:
+    + 技能生命期管理
+    + 技能CD管理
+    + buff生命期管理
+    + buff叠加/冲抵管理
+    + AI的技能方案：1：与玩家统一；2：简化
+    + ![Common Skill Flow](../files/skillFlow.jpg)
+
+## 任务链及进度管理
+TODO
 
