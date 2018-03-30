@@ -207,12 +207,14 @@ Client_onCreatedProxies根据消息中的Entity名字在Entity类映射表中找
     + addEnemy
         - onAddEnemy: set 战斗状态
 
-## 其他
+## 其他Tips:
 1. Avatar的名字 tbl_avatar的sm_name为空导致脚本访问Avatar.nameB出错
 2. Unity生成数据只来自于kbengine_unity3d_demo 
 3. 输出log：self.getScriptName()
 4. 可以通过ControlledBy来控制其他Entity(AOI内)的位置，当然也可以通过在Avatar中添加数据同步然后在服务端赋给其他entity(这个不限于AOI内)
 5. Volatile中的optimized(为true)将不同步y坐标
+6. 关闭pitch/roll同步似乎不起作用，修改yaw时会影响到pitch/roll，所以必要时在修改yaw时也要将pitch/roll置0
+7. ？controlledBy=None可能只是不将player同步给base的位置信息发给cell，所以如果在此期间player持续同步位置给base的话，切换回来时之前server的数据可能会被覆盖
 
 
 ## Skill
@@ -228,13 +230,10 @@ Client_onCreatedProxies根据消息中的Entity名字在Entity类映射表中找
     + AI的技能方案：1：与玩家统一；2：简化
     + ![Common Skill Flow](../files/skillFlow.jpg)
         - 1）技能释放请求，就是玩家通过按钮、宏等方式申请释放技能。
-        - 2）客户端会对技能有个条件判定(例如距离，mp，乃至cd)，以避免频繁向服务端发送请求，条件满足则先行播放一些准备的动作。
+        - 2）客户端会对技能有个条件判定(例如距离，mp，乃至cd)，以避免频繁向服务端发送请求，条件满足则先行播放一些准备的动作，向服务端发送技能请求。
         - 3）服务端判断技能条件是否满足(例如距离，mp，cd等)。
-        - 4）如果技能无法释放，服务器通知客户端终止准备阶段的动作，并且提示错误
+        - 4）如果技能无法释放，服务器通知客户端技能发动失败，客户端终止准备阶段的动作，错误表现
         - 5）如判断成功，则通知各客户端进入吟唱阶段/UI进度条时间。瞬发技能可以跳过这个阶段，在这个阶段中可以设计打断类技能来终止流程等
         - 6）如有吟唱阶段，在结束时服务端还需再次判断技能条件是否满足
         
-
-## 任务链及进度管理
-TODO
 
