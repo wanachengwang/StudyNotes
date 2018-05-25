@@ -22,6 +22,6 @@
 + we should optimized this code with multithread
 + so use JobSystem, kind of similar with openMP's ParallelFor, use worker threads
 + interface:IJob/IJobParallelFor(index)
-+ data: NativeArray (Note: += would not eval back)
++ data: NativeContainers:NativeArray,NativeList,NativeHashMap,NativeQueue (Note: += would not eval back)
 + schedule 
 + complete to unlock data, and start the next job(if scheduled)
