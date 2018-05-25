@@ -136,23 +136,18 @@ Client_onCreatedProxies根据消息中的Entity名字在Entity类映射表中找
     Proxy* base = static_cast<Proxy*>(createEntity(g_serverConfig.getDBMgr().dbAccountEntityScriptType,
             NULL, false, entityID));
     ```
-2. base/Account.py中创建Avatar:
-    + 新建：kbengine.createBaseLocally('Avatar', props), 然后 Avatar.WriteToDB
-    + 从DB加载: kbengine.createBaseFromDBID('Avatar', dbid, onAvatarCreated)
+2. base/Account.py中创建Avatar Entity:
+    + 新建：kbengine.createBaseLocally('Avatar', props)临时Avatar, 然后 Avatar.WriteToDB, 然后avatar.destroy删除自己
+    + 选择：从DB加载所选Avatar: kbengine.createBaseFromDBID('Avatar', dbid, onAvatarCreated)
     + self.giveClientTo(avatar) #将客户端控制权转交给Avatar
 3. base/kbengine.py中创建spaces(多个space的管理器):
     + KBEngine.createBaseLocally( "Spaces", {} )
     + 保存在globalData["Spaces"]
-4. base/spaces.py中根据场景表(data/d_spaces.py)创建多个space(以及一个SpaceDuplicate)
+4. base/spaces.py中根据场景表(data/d_spaces.py)创建多个space(以及一个SpaceDuplicate),数据范例：
     |id|type|entityType|resPath|spawnPos|name|
     |-|-|-|-|-|-|-
     |1|1|Space         |spaces/xinshoucun              |(771.5861, 211.0021, 776.5501)|新手村
-    |2|1|Space         |spaces/kbengine_ogre_demo      |(-97.9299, 0.0, -158.922)     |kbengine_ogre_demo      
-    |3|1|Space         |spaces/kbengine_unity3d_demo   |(-97.9299, 1.5, -158.922)     |kbengine_unity3d_demo   
-    |4|1|Space         |spaces/teleportspace           |(0.0, 1.5, 0.0)               |teleportspace  
-    |5|2|SpaceDuplicate|spaces/duplicate               |(0.0, 0.0, 0.0)               |Duplicate(副本)
-    |6|1|Space         |spaces/kbengine_cocos2d_js_demo|(108.0, 0.0, 90.0)            |kbengine_cocos2d_js_demo
-    |7|1|Space         |spaces/kbengine_ue4_demo       |(-97.9299, 1.5, -158.922)     |kbengine_ue4_demo       
+    |2|2|SpaceDuplicate|spaces/duplicate               |(0.0, 0.0, 0.0)               |Duplicate(副本)
     + 根据以上数据创建spaceAlloc,createSpaceOnTimer中调用SpaceAlloc.init创建Space Entity:
     KBEngine.createBaseAnywhere(spaceData["entityType"],{"spaceUType" : self._utype,
                                                          "spaceKey" : spaceKey,
@@ -206,6 +201,9 @@ Client_onCreatedProxies根据消息中的Entity名字在Entity类映射表中找
 3. recvDamage/onEnterTrap(AI的范围触发器)
     + addEnemy
         - onAddEnemy: set 战斗状态
+    + changeState(GlobalDefine.ENTITY_STATE_DEAD)
+        - Destroy
+        - reSpawn in spawnPoint.onRestore
 
 ## 其他Tips:
 1. Avatar的名字 tbl_avatar的sm_name为空导致脚本访问Avatar.nameB出错
@@ -215,15 +213,22 @@ Client_onCreatedProxies根据消息中的Entity名字在Entity类映射表中找
 5. Volatile中的optimized(为true)将不同步y坐标
 6. 关闭pitch/roll同步似乎不起作用，修改yaw时会影响到pitch/roll，所以必要时在修改yaw时也要将pitch/roll置0
 7. ？controlledBy=None可能只是不将player同步给base的位置信息发给cell，所以如果在此期间player持续同步位置给base的话，切换回来时之前server的数据可能会被覆盖
+8. 注意属性的范围:Cell的属性不能再Base中访问
+9. 自定义类型(这里只讨论没有implementedBy的情况)：
+    + ARRAY可以直接[]复制，也可[i]=赋值
+    + FIXED_DICT可以直接{}(需确保键值与type.xml中匹配),也可["Key"]=赋值
+    + 注意：对于ARRAY/FIXED_DICT之类复杂的类型只在整个属性级别进行修改监控，同步
+    即修改其中元素不会触发同步，可以用类似代码self.equips = self.equips触发
 
 
+# MOD——CODING
 ## Skill
 1. Avatar->SkillBox: 为客户端提供接口对玩家的技能包的增删改查，以及提供UseTargetSkill来发动技能
 2. Avatar/Monster->Spell
 3. 对于玩家，Demo中在SkillBox的初始化中为调用self.skills.append为玩家添加技能
 4. 对于Monster,Demo中直接在Ai.py的onThinkFight直接发技能
 5. TODO:
-    + 技能生命期管理
+    + 技能生命期管理/SkillManager替换SkillBox+Spell
     + 技能CD管理
     + buff生命期管理
     + buff叠加/冲抵管理
@@ -236,4 +241,26 @@ Client_onCreatedProxies根据消息中的Entity名字在Entity类映射表中找
         - 5）如判断成功，则通知各客户端进入吟唱阶段/UI进度条时间。瞬发技能可以跳过这个阶段，在这个阶段中可以设计打断类技能来终止流程等
         - 6）如有吟唱阶段，在结束时服务端还需再次判断技能条件是否满足
         
+## Inventory/Items
+1. 背包InventoryItems(Array of InventoryEntry)还需商榷
+    + Type of Item
+    + SerialNo. of Item
+    + LockHandle: locked by what, used in trading in example
+2. 锁定列表/在交易中或因其他原因不能使用InventoryLocks(Array of LockEntry)
+    + LockHandle: locked by what
+    + GoldPieces：
+3. GoldPieces：金钱
+4. TODO/问题:
+    + ??交易使用单独的交易管理器，而不是lock
+        - 待完成的交易(包含两方的Items)暂存在管理员处，超时返回各自背包，取消交易
+            - ??写数据库次数，直接操作数据库(实体自动化persist是数据条目整存整取,不适合放太大的数据(如大的Array/Dict))
+        - 寄送直接给对方的邮箱(一个背包栏目???)
+        - 拍卖类似于交易，只是超时较长
+        - TradeMgr Array of TRADE, 数据库读写的数据太多
+    + ？？？安全检查的代码需不需要加，还是就让他报错？？
+    + ？？？客户端背包缓存到什么程度？例如交换之类操作只是返回成功/失败，还是更新影响的物品栏目（只能存在客户端缓存中，可能影响不了背包），还是整个背包完全更新
+        - 若1：则需要定义多个操作返回值
+        - 若2：数据稍多一些，但消息类型少
+        - 若3：数据最多
+    
 

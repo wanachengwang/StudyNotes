@@ -82,7 +82,7 @@
 + 管理
     1. Redmine 使用要求
 + 程序
-    1. 编码规范/单元测试/文件夹结构
+    1. 编码规范/单元测试/文件夹结构/编程工具/调试工具
     2. 性能要求/framework
     3. 系统设计/数据库
     4. 返回值定义+0xAABB:
@@ -91,7 +91,7 @@
             - 00~7f 非错误
             - 80~ff 错误
         + 通常的OK = 0
-        + 通常的FAIL = -
+        + 通常的FAIL = -1
 + 策划: 做成Editor菜单检查校验 / 或在资源导入时检查
     1. 
 + 美术: 做成Editor菜单检查校验 / 或在资源导入时检查
@@ -100,15 +100,18 @@
 ### 防作弊（特别是PC版）
 ### GM工具
 ### 任务链、编辑器及任务进度管理
+### 物品/背包
+1. 如果武平不多(几百以内)，可以用实体自动存储，否则用executeRawDatabaseCommand是最可控的。 http://bbs.kbengine.org/forum.php?mod=viewthread&tid=3993&highlight=%E8%83%8C%E5%8C%85
+2. 
 ### 技能编辑器
-### AI 行为树编辑器
-1. 移动
-2. 发动技能
+1. Animation/Timeline
+### AI 行为树编辑器(python)
+1. 参考：behavior3/behaviac等
+2. NodeEditor
+3. 移动
+4. 发动技能
 
 2. State Machine 
     + Animation Editor as State Editor 
     + Animator Editor as State Machine Editor
     + 讨论，在有服务器的情况下
-
-
-
