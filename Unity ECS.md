@@ -12,8 +12,17 @@
     + Flow:
         - Bootstrap,use [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         - In Bootstrap, create entities, fill component data
-        - components would be put into the corresponding ComponentSystem's list in background by injection
-        - all ComponentSystem would invoke OnUpdate every frame
+        - *Components would be put into the corresponding ComponentSystem's list in background by injection
+            ```csharp
+                public struct Data
+                {
+                    public int Length;
+                    [ReadOnly] public ComponentDataArray<Position2D> Position;
+                    public ComponentDataArray<EnemyShootState> ShootState;
+                }
+                [Inject] private Data m_Data
+            ```
+        - *ALL CLASSes derived from ComponentSystem would invoke OnUpdate every frame
 2. Hybrid ECS:
     + ？？？？
 
@@ -25,3 +34,6 @@
 + data: NativeContainers:NativeArray,NativeList,NativeHashMap,NativeQueue (Note: += would not eval back)
 + schedule 
 + complete to unlock data, and start the next job(if scheduled)
+
+### In Unity
++ Unity 2018.2.0b5-->Window-->Debug-->Entity Debugger
