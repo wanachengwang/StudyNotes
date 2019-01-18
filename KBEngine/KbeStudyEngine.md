@@ -93,11 +93,32 @@ See server logs, Startup and Shutdown, etc.
             TOOL_TYPE				= 14,
             COMPONENT_END_TYPE		= 15,
         };
-+ uid：在bat中定义的环境变量，可以看作服务器组的ID
++ uid：在bat中定义的环境变量，可以看作服务器组的ID；linux环境自带
 
         if defined uid (echo UID = %uid%) else set uid=%random%%%32760+1
 + How to start other components in other machines in lan?
 
+## 负载均衡/多开
++ uid/cid/gus：参考前文
++ 本地多开：注意根据需求调整xml中externalTcpPorts_max的值，若app进程数太多而port不足会出错。
+
+        start %KBE_BIN_PATH%/baseapp.exe --cid=7011 --gus=81
+        start %KBE_BIN_PATH%/baseapp.exe --cid=7012 --gus=82
+        start %KBE_BIN_PATH%/cellapp.exe --cid=8011  --gus=101
+        start %KBE_BIN_PATH%/cellapp.exe --cid=8012  --gus=102
+        start %KBE_BIN_PATH%/loginapp.exe --cid=9011 --gus=111
++ 局域网内多开：
+    + 确保两边的uid一样
+    + 确保两边都开machine，同样的cid，gus
+    + loginapp/baseapp/cellapp的启动命令行与本地多开一样。
+    + 不同机器上的loginapp可以用同样的port（因为ip已不同）
+
+            set uid=10103
+            start %KBE_BIN_PATH%/machine.exe --cid=1010 --gus=1
+            start %KBE_BIN_PATH%/baseapp.exe --cid=7011 --gus=81
+            start %KBE_BIN_PATH%/cellapp.exe --cid=8011  --gus=101
+            start %KBE_BIN_PATH%/loginapp.exe --cid=9011 --gus=111
++ entities会分配在多个baseapp/cellapp之间生成（每个baseapp/cellapp分得的entities的多少跟cpu快慢以及内部算法？相关），有可能出现大部分entities在一个baseapp/cellapp生成，其它baseapp/cellapp生成很少甚至没有entities的情况。其它baseapp/cellapp通常是由第一个转发。
 
 ## 代码结构
 + XXX: Module Names listed above(interface/logger/bots/kbcmd is srv_tools), and libs(Client).

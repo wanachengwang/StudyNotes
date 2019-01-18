@@ -63,7 +63,7 @@ Note:
         .NonLazy();
 - ContractType = type to bind for, aka. type of field/parameter to inject
 - ResultType = type to bind to, type of variable to fill field/parameter
-    - Default: ContractType, aka. ToSelf()
+    - Default: ContractType, aka. no type cast.
 - Identifier string or any type
 - ConstructionMethod
     - Default: FromNew
