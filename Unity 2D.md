@@ -7,6 +7,8 @@
     - record / edit anim in dopeSheet/Curve
     - add event if needed
     - affect self and children
+    - in editor, deeper child has more left padding
+    - in inner implementation, setCurve("relative path")
 - Animator Editor(*.controller yaml) to edit animator
     - State machine      
     - State / Transition / Condition(Parameter) / StateMachineBehaviour / Event

@@ -29,6 +29,7 @@ class DNSQuery:
 
 if __name__ == '__main__':
   ip='119.23.43.18'
+  #ip='118.123.241.222'
   print ('pyminifakeDNS:: dom.query. 60 IN A %s' % ip)
   
   udps = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

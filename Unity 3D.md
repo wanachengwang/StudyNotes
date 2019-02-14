@@ -9,17 +9,32 @@
 - Animation: Anime current gameobject(and children)
     - Refer to Unity 2D.md
     - Animation Clip can be edited in Inspector
+    - in editor, deeper child has more left padding
+    - in inner implementation, setCurve("relative path")
 - Animator: Logic of transferring among animation clips
     - Refer to Unity 2D.md
 - Timeline: Anime multi gameobjects to a movie clip
 
 - Modeling: Generate vertices of pos/norm/etc(Other data would refer it by indice)
 - Skeleton: A set of bones with position/rotation(local)
-- Binding: Join vertices with skeleton
-- Skinning: Set Weights(BindShape/Matrix/Weights)
+    - 骨节-IK/Bone-FK
+    - 动画数据:
+        - name(frame/bone名)
+        - 旋转矩阵(没有位移/放缩，才能实现IK)
+- Skinning: 蒙皮，将模型依附到你的骨骼上，刷权重(BindShape/Matrix/Weights)
+- Binding: 绑定，包括搭建骨骼，对骨骼的设置(例如旋转角度限制)，控制器的添加，广义上也还包括蒙皮
+- Rigging: 即广义的绑定
 - File format:
     - fbx(http://download.autodesk.com/us/fbx/2010/fbx_sdk_help/index.html?url=WS1a9193826455f5ff-150b16da11960d83164-6c6f.htm,topicNumber=d0e127)
     - dae(https://www.khronos.org/files/collada_spec_1_5.pdf)
+
+- SkinnedMeshRenderer与Bones:
+    - SkinnedMeshRenderer中的Bones是一系列transform的数组；rootBone用于处理根节点位移动画，跟普通动画无关；bindpose数组是每个bone相对于根的位置矩阵
+    - SkinnedMeshRenderer中的mesh存在boneweight数组，一个vertice有对应的一个boneweight数据(支持多达4个bone index的权重数据)
+    - Unity hierachy中的层级关系来自动画文件
+        - 如果内部是按照AnimationClip的setCurve来实现的话，这个层级会作为relativePath参数传递进去
+        - 如果内部是直接根据bone index来获取bone的transform的话，那这个层级关系就只有参考意义
+
 ## Assetbundles
 - Build Flow
     - Set Assetbundles name/variant(ext) in Inspector's AssetBundle lable
