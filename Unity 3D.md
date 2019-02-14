@@ -16,6 +16,8 @@
 - Timeline: Anime multi gameobjects to a movie clip
 
 - Modeling: Generate vertices of pos/norm/etc(Other data would refer it by indice)
+    - blender
+    - probuilder/hotkeys(w/e/r/ctrl+e/shift)
 - Skeleton: A set of bones with position/rotation(local)
     - 骨节-IK/Bone-FK
     - 动画数据:
