@@ -1,0 +1,71 @@
+第一步：创建kbe用户
+生产环境：命令创建管理员用户即可，不然无法使用管理员命令
+开发环境：图形界面创建（设置--详细信息--用户）
+
+第二步：登录切换到kbe用户
+图形界面：设置--关机按钮旁边那个锁按钮
+命令行界面：
+
+第三步：设置环境变量
+（分布式部署多台服务器情况下，手动设置）
+简单一台，启动时候脚本自己设置了。
+
+第四步：安装python环境
+linux一般默认安装了python
+python -V
+
+第五步：安装和配置mysql
+安装mysql服务端: sudo apt-get install mysql-server
+安装mysql客户端: sudo apt-get install mysql-client
+安装mysql依赖库: sudo apt-get install libmysqld-dev 开发者使用
+设定mysql为开机自动启动:缺省是开机自启动的。
+
+登录：sudo mysql -u root
+创建kbe数据库:create database kbe
+删除匿名用户：
+mysql> use mysql 
+mysql> delete from user where user=''; 
+mysql> FLUSH PRIVILEGES;
+创建数据库用户：
+mysql> grant all privileges on *.* to kbe@'%' identified by 'pwd123456';
+mysql> grant select,insert,update,delete,create,drop on *.* to kbe@'%' identified by 'pwd123456';
+mysql> FLUSH PRIVILEGES;
+
+退出：
+quit
+3.2.4: 验证
+ sudo mysql -ukbe -ppwd123456 -hlocalhost -P3306
+
+第六步：安装其它依赖库
+sudo apt-get install libssl-dev
+
+第七步：安装编译工具
+安装vim gcc g++ libtool autoconf make 
+sudo apt-get install vim
+...
+
+第八步：编译
+下载：预览版  放在英文路径 
+wget https://github.com/kbengine/kbengine/archive/v2.3.0.tar.gz
+tar -zxvf kbe...
+解压
+改变文件权限：kbe.  
+编译：sudo make  超级用户权限，不然容易出问题
+---------------------------------------------------------------------------
+第九步：安装
+使用安装脚本
+
+第十步：启动
+使用启动脚本
+# 未设置环境变量
+cd <引擎根目录>/assets
+sh start_server.sh
+
+查看结果：ps -aux | grep 引擎根目录
+
+
+
+
+
+
+

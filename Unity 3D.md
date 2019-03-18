@@ -32,7 +32,7 @@
 
 - SkinnedMeshRenderer与Bones:
     - SkinnedMeshRenderer中的Bones是一系列transform的数组；rootBone用于处理根节点位移动画，跟普通动画无关；bindpose数组是每个bone相对于根的位置矩阵
-    - SkinnedMeshRenderer中的mesh存在boneweight数组，一个vertice有对应的一个boneweight数据(支持多达4个bone index的权重数据)
+    - SkinnedMeshRenderer中的mesh存在boneweight数组，一个vertice有对应的一个boneweight数据(支持多达4个bone index(0,1,2,3)的权重数据)
     - Unity hierachy中的层级关系来自动画文件
         - 如果内部是按照AnimationClip的setCurve来实现的话，这个层级会作为relativePath参数传递进去
         - 如果内部是直接根据bone index来获取bone的transform的话，那这个层级关系就只有参考意义
@@ -40,9 +40,15 @@
 ## Assetbundles
 - Build Flow
     - Set Assetbundles name/variant(ext) in Inspector's AssetBundle lable
+        - AssetImporter.GetAtPath(path).assetBundleName = xxx
     - Or Drag assets into AssetBundle Browser
-    - Then Build AssetBundle in AssetBundle Browser or with BuildPipeline.BuildAssetBundles
+    - Then Build AssetBundle in AssetBundle Browser
+        - BuildPipeline.BuildAssetBundles with AssetBundleBuild array
+            - only build these abs
+        - BuildPipeline.BuildAssetBundles without AssetBundleBuild array
+            - build all abs, generate folder_name.manifest and its ab file
     - Scene can be build into AssetBundle, and prior to the scene in build with same name when SceneManager.LoadScene.
+    - [参考](http://www.cnblogs.com/murongxiaopifu/p/7146430.html)
 - Included In Multiple Bundles
     - Warning in AssetBundle Browser
     - Cause bigger bundle files
