@@ -61,6 +61,15 @@ A standard unity project directory structure.
 | Parameter/Local variables | Camel | localVar
 
 ## Class file layout
+* Simple order (static then instance) (values/constructors/behaviors)：
+    + Constants
+    + Static fields/properties/ methods
+    + Private fields/properties
+    + Public fields/properties
+    + Constructors/Destructors
+    + Public methods
+    + Private methods
+    + Nested class/enumeration or use partial to declare at other place
 * [StyleCop in stackoverflow](https://stackoverflow.com/questions/150479/order-of-items-in-classes-fields-properties-constructors-methods)
     + Within a class, struct or interface: (SA1201 and SA1203)
         - Constant Fields
